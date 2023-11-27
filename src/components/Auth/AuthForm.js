@@ -6,7 +6,7 @@ const AuthForm = () => {
   const emailinputref = useRef();
   const passwordinputref = useRef();
   const [isLogin, setIsLogin] = useState(true);
-  const [isloading , setisloading]=useState(false)
+  const [isloading, setisloading] = useState(false);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -18,39 +18,49 @@ const AuthForm = () => {
     const enetredEmail = emailinputref.current.value;
     const enetredPassword = passwordinputref.current.value;
 
-
-    setisloading(true)
+    setisloading(true);
+    let url;
     if (isLogin) {
-
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAVdjxsfFD9GI8AS1-icdarMxlh_KQffzA";
     } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAVdjxsfFD9GI8AS1-icdarMxlh_KQffzA"
-      ,{
-        method:'POST',
-        body: JSON.stringify({
-          email:enetredEmail,
-          password:enetredPassword,
-          returnSecureToken:true
-        }),
-        headers:{
-          'Content-Type': 'application/json'
-        }
-      }).then(res=>{
-        setisloading(false)
-        if(res.ok){
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAVdjxsfFD9GI8AS1-icdarMxlh_KQffzA";
+    }
 
-        }else{
-          return res.json().then(data =>{
-            //shoe  error message
-            let errormessage = 'Authentication failed'
-            if(data && data.error && data.error.message){
-             errormessage = data.error.message
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enetredEmail,
+        password: enetredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        setisloading(false);
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            //show  error message
+            let errormessage = "Authentication failed";
+            if (data && data.error && data.error.message) {
+              errormessage = data.error.message;
             }
-            alert(errormessage);
+            // alert(errormessage);
+            throw new Error(errormessage);
           });
         }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        alert(err.message);
       });
-    }
   };
   return (
     <section className={classes.auth}>
@@ -70,7 +80,9 @@ const AuthForm = () => {
           />
         </div>
         <div className={classes.actions}>
-          {!isloading && <button>{isLogin ? "Login" : "create Account"}</button>}
+          {!isloading && (
+            <button>{isLogin ? "Login" : "create Account"}</button>
+          )}
           {isloading && <p>Sending request ...</p>}
           <button
             type="button"

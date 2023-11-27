@@ -28,8 +28,7 @@ const ProfileForm = () => {
       }
     ).then((response) => {
       //assumption always success
-      history.replace('/')
-
+      history.replace("/");
     });
   };
 

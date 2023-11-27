@@ -1,32 +1,32 @@
 import React, { useState } from "react";
 import Authcontext from "./Authcontext";
 
+const Authprovider = (props) => {
+  const initialToken = localStorage.getItem("idToken");
+  const [token, setToken] = useState(initialToken);
 
+  const userIsLogedIn = !!token;
 
-const Authprovider=(props)=>{
-
-const [token , setToken] =useState(null);
-
-const userIsLogedIn = !!token
-
-const loginHandler=(token)=>{
+  const loginHandler = (token) => {
     setToken(token);
-}
-const logoutHandler=()=>{
+    localStorage.setItem("idToken", token);
+  };
+  const logoutHandler = () => {
     setToken(null);
-}
+    localStorage.removeItem("idToken");
+  };
 
-const contextValue={
-token:token,
-isLoggedIn:userIsLogedIn,
-login:loginHandler,
-logout:logoutHandler,
-}
-return (
-  <Authcontext.Provider value={contextValue}>
-    {props.children}
-  </Authcontext.Provider>
-);
-}
+  const contextValue = {
+    token: token,
+    isLoggedIn: userIsLogedIn,
+    login: loginHandler,
+    logout: logoutHandler,
+  };
+  return (
+    <Authcontext.Provider value={contextValue}>
+      {props.children}
+    </Authcontext.Provider>
+  );
+};
 
-export default Authprovider
+export default Authprovider;

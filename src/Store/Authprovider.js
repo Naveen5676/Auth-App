@@ -15,6 +15,9 @@ const Authprovider = (props) => {
     setToken(null);
     localStorage.removeItem("idToken");
   };
+  setTimeout(() => {
+    localStorage.removeItem("idToken");
+  }, 5000);
 
   const contextValue = {
     token: token,
